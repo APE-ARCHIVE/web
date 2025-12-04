@@ -128,18 +128,18 @@ export const pdfs: Pdf[] = [
 ];
 
 export const subjects = [
-  { name: "Combined Maths" },
-  { name: "Physics" },
-  { name: "Chemistry" },
-  { name: "Biology" },
-  { name: "Science" },
-  { name: "Commerce" },
-  { name: "IT" },
-  { name: "English" },
-  { name: "Sinhala" },
-  { name: "History" },
-  { name: "Business Studies" },
-  { name: "Economics" },
+  { name: "Combined Maths", count: 324 },
+  { name: "Physics", count: 289 },
+  { name: "Chemistry", count: 267 },
+  { name: "Biology", count: 312 },
+  { name: "Science", count: 445 },
+  { name: "Commerce", count: 198 },
+  { name: "IT", count: 356 },
+  { name: "English", count: 423 },
+  { name: "Sinhala", count: 278 },
+  { name: "History", count: 156 },
+  { name: "Business Studies", count: 234 },
+  { name: "Economics", count: 187 },
 ];
 
 export const levels = [

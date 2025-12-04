@@ -2,16 +2,18 @@ import { pdfs } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Download, Share, User, Calendar, Book, GraduationCap, Languages, Tag, Star } from 'lucide-react';
+import { Download, Share, Calendar, Book, GraduationCap, Languages, Tag, Star, FileText } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { PdfCard } from '@/components/shared/pdf-card';
+import { use } from 'react';
 
-export default function PdfDetailPage({ params }: { params: { id: string } }) {
-  const pdf = pdfs.find((p) => p.id === params.id);
+export default function PdfDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
+  const pdf = pdfs.find((p) => p.id === id);
 
   if (!pdf) {
     notFound();
