@@ -6,9 +6,10 @@ import { Footer } from '@/components/shared/footer';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ModeToggle } from '@/components/mode-toggle';
+import { LanguageProvider } from '@/lib/i18n-context';
 
 export const metadata: Metadata = {
-  title: 'Lanka StudyShare',
+  title: 'APE ARCHIVE',
   description: 'Access and share study materials online during emergencies and anytime you need.',
 };
 
@@ -28,22 +29,24 @@ export default function RootLayout({
         />
       </head>
       <body className={cn('min-h-screen bg-background font-body antialiased')}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <div className="relative flex min-h-screen flex-col justify-center items-center">
-            <Header />
-            {children}
-            <Footer />
-          </div>
-          <div className="fixed bottom-4 right-4 z-50">
-            <ModeToggle />
-          </div>
-          <Toaster />
-        </ThemeProvider>
+        <LanguageProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <div className="relative flex min-h-screen max-w-7xl mx-auto flex-col justify-center items-center">
+              <Header />
+              {children}
+              <Footer />
+            </div>
+            <div className="fixed bottom-4 right-4 z-50">
+              <ModeToggle />
+            </div>
+            <Toaster />
+          </ThemeProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

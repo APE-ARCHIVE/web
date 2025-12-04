@@ -1,0 +1,32 @@
+{
+    "common": {
+        "appName": "ලංකා StudyShare",
+        "home": "මුල් පිටුව",
+        "browse": "PDF ගවේෂණය",
+        "upload": "උඩුගත කරන්න",
+        "about": "අපි ගැන",
+        "dashboard": "පුවරුව",
+        "profile": "පැතිකඩ",
+        "logout": "ඉවත් වන්න",
+        "login": "පිවිසෙන්න",
+        "signup": "ලියාපදිංචි වන්න",
+        "contribute": "දායක වන්න"
+    },
+    "home": {
+        "heroTitle": "ලංකා StudyShare",
+        "heroDescription": "හදිසි අවස්ථා වලදී සහ ඔබට අවශ්‍ය ඕනෑම වේලාවක අධ්‍යයන ද්‍රව්‍ය අන්තර්ජාලය හරහා ලබා ගන්න සහ බෙදා ගන්න.",
+        "browseButton": "PDF ගවේෂණය",
+        "uploadButton": "සම්පත් උඩුගත කරන්න",
+        "popularSubjectsTitle": "ජනප්‍රිය විෂයයන්",
+        "popularSubjectsDescription": "ශ්‍රී ලංකාව පුරා සිසුන් විසින් බෙදාගත් පුළුල් පරාසයක විෂයයන් ගවේෂණය කරන්න.",
+        "latestUploadsTitle": "නවතම PDF",
+        "latestUploadsDescription": "අපගේ එකතුවට එක් කළ නවතම සම්පත් පරීක්ෂා කරන්න.",
+        "viewAllButton": "සියලුම PDF බලන්න",
+        "contributorsTitle": "අපගේ ඉහළම දායකයින්",
+        "contributorsDescription": "දැනුම බෙදාහදා ගනිමින් අපගේ ප්‍රජාව බලගන්වන කැපවූ පුද්ගලයින් හමුවන්න.",
+        "trustedTitle": "ශ්‍රී ලාංකික සිසුන්ගේ විශ්වාසය දිනාගත්",
+        "trustedDescription": "අපගේ වේදිකාව ගොඩනඟා ඇත්තේ විශ්වාසදායක සහ ප්‍රවේශ විය හැකි සම්පත් සමඟ සිසුන්ගේ අධ්‍යාපනික අවශ්‍යතා සඳහා සහාය වීම සඳහා ය.",
+        "activeUsers": "ක්‍රියාකාරී පරිශීලකයින්",
+        "pdfsShared": "බෙදාගත් PDF"
+    }
+}

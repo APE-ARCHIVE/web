@@ -26,11 +26,12 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { LanguageSwitcher } from '@/components/language-switcher';
 
 
 const navLinks = [
   { href: '/', label: 'Home', icon: Home },
-  { href: '/browse', label: 'Browse PDFs', icon: FileText },
+  { href: '/browse', label: 'Library', icon: FileText },
   { href: '/upload', label: 'Upload', icon: Upload },
   { href: '/about', label: 'About', icon: Info },
 ];
@@ -53,7 +54,7 @@ export function Header() {
         <div className="flex items-center">
           <Link href="/" className="hidden md:flex items-center space-x-2 mr-6">
             <BookOpen className="h-6 w-6 text-primary" />
-            <span className="font-bold font-headline">Lanka StudyShare</span>
+            <span className="font-bold font-headline">APE ARCHIVE</span>
           </Link>
 
           <Sheet open={isSheetOpen} onOpenChange={setSheetOpen}>
@@ -66,7 +67,7 @@ export function Header() {
             <SheetContent side="left" className="pr-0">
               <Link href="/" className="mb-4 flex items-center" onClick={() => setSheetOpen(false)}>
                 <BookOpen className="mr-2 h-6 w-6 text-primary" />
-                <span className="font-bold font-headline">Lanka StudyShare</span>
+                <span className="font-bold font-headline">APE ARCHIVE</span>
               </Link>
               <div className="my-4 h-[calc(100vh-8rem)]">
                 <div className="flex flex-col space-y-3">
@@ -94,9 +95,12 @@ export function Header() {
 
           <Link href="/" className="flex items-center space-x-2 md:hidden">
             <BookOpen className="h-6 w-6 text-primary" />
-            <span className="font-bold font-headline">Lanka StudyShare</span>
+            <span className="font-bold font-headline">APE ARCHIVE</span>
           </Link>
 
+          <div className="ml-4">
+            <LanguageSwitcher />
+          </div>
         </div>
 
         <div className="flex items-center space-x-6">

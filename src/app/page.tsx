@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -19,10 +21,12 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useLanguage } from '@/lib/i18n-context';
 
 export default function Home() {
   const heroImage = PlaceHolderImages.find((img) => img.id === 'hero');
   const latestPdfs = pdfs.slice(0, 4);
+  const { t } = useLanguage();
 
   return (
 
@@ -32,21 +36,20 @@ export default function Home() {
           <div className="grid gap-4 md:grid-cols-2 md:gap-16">
             <div className="flex flex-col items-start space-y-4">
               <h1 className="lg:leading-tighter text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl xl:text-[3.4rem] 2xl:text-[3.75rem] font-headline">
-                Lanka StudyShare
+                {t('home.heroTitle')}
               </h1>
               <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                Access and share study materials online during emergencies and
-                anytime you need.
+                {t('home.heroDescription')}
               </p>
               <div className="space-x-4">
                 <Button asChild size="lg">
                   <Link href="/browse">
-                    Browse PDFs
+                    {t('home.browseButton')}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
                 <Button asChild size="lg" variant="secondary">
-                  <Link href="/upload">Upload Resources</Link>
+                  <Link href="/upload">{t('home.uploadButton')}</Link>
                 </Button>
               </div>
             </div>
@@ -74,11 +77,10 @@ export default function Home() {
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl font-headline">
-                Popular Subjects
+                {t('home.popularSubjectsTitle')}
               </h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Explore a wide range of subjects shared by students across Sri
-                Lanka.
+                {t('home.popularSubjectsDescription')}
               </p>
             </div>
           </div>
@@ -105,10 +107,10 @@ export default function Home() {
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl font-headline">
-                Latest Uploaded PDFs
+                {t('home.latestUploadsTitle')}
               </h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Check out the newest resources added to our collection.
+                {t('home.latestUploadsDescription')}
               </p>
             </div>
           </div>
@@ -120,7 +122,7 @@ export default function Home() {
           <div className="text-center mt-12">
             <Button asChild>
               <Link href="/browse">
-                View All PDFs <ArrowRight className="ml-2 h-4 w-4" />
+                {t('home.viewAllButton')} <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           </div>
@@ -135,11 +137,10 @@ export default function Home() {
           <div className="flex flex-col items-center justify-center space-y-4 text-center">
             <div className="space-y-2">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl font-headline">
-                Our Top Contributors
+                {t('home.contributorsTitle')}
               </h2>
               <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                Meet the dedicated individuals who power our community by
-                sharing knowledge.
+                {t('home.contributorsDescription')}
               </p>
             </div>
           </div>
@@ -195,11 +196,10 @@ export default function Home() {
         <div className="container grid items-center justify-center gap-4 px-4 text-center md:px-6">
           <div className="space-y-3">
             <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight font-headline">
-              Trusted by Sri Lankan Students
+              {t('home.trustedTitle')}
             </h2>
             <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              Our platform is built to support the educational needs of
-              students with reliable and accessible resources.
+              {t('home.trustedDescription')}
             </p>
           </div>
           <div className="flex justify-center space-x-8">
@@ -208,7 +208,7 @@ export default function Home() {
               <div className="text-left">
                 <div className="text-2xl font-bold">10,000+</div>
                 <div className="text-sm text-muted-foreground">
-                  Active Users
+                  {t('home.activeUsers')}
                 </div>
               </div>
             </div>
@@ -217,7 +217,7 @@ export default function Home() {
               <div className="text-left">
                 <div className="text-2xl font-bold">5,000+</div>
                 <div className="text-sm text-muted-foreground">
-                  PDFs Shared
+                  {t('home.pdfsShared')}
                 </div>
               </div>
             </div>

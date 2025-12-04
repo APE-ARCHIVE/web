@@ -1,10 +1,10 @@
-# **App Name**: Lanka StudyShare
+# **App Name**: APE ARCHIVE
 
 ## Core Features:
 
-- Landing Page: Design a landing page with a hero section, CTAs (Browse PDFs, Upload Resources), featured sections (Popular subjects, Latest uploaded PDFs, Trusted by Sri Lankan students).
-- Navigation Bar: Implement a responsive top navigation bar with Logo, Home, Browse PDFs, Upload, About, Login/Signup buttons. Include a hamburger menu for mobile.
-- Browse PDFs Page: Develop a clean interface for browsing PDFs with grid/list view, cards showing PDF icon, title, description, subject, language, tags, and View/Download buttons. Also implement a side filter panel with search, subject, level, language, and sort options.
+- Landing Page: Design a landing page with a hero section, CTAs (Library, Upload Resources), featured sections (Popular subjects, Latest uploaded PDFs, Trusted by Sri Lankan students).
+- Navigation Bar: Implement a responsive top navigation bar with Logo, Home, Library, Upload, About, Login/Signup buttons. Include a hamburger menu for mobile.
+- Library Page: Develop a clean interface for browsing PDFs with grid/list view, cards showing PDF icon, title, description, subject, language, tags, and View/Download buttons. Also implement a side filter panel with search, subject, level, language, and sort options.
 - PDF Details Page: Create a detailed page for each PDF with title, metadata, a preview iframe mockup, download/share buttons, uploader info, and a related PDFs list.
 - Upload PDF Form: Design a simple form for uploading PDFs, including fields for title, description, subject, level, language, tags, and a PDF file picker UI. Show form validation UI states.
 - Authentication Pages: Design UI for login, signup, and reset password pages with email/password fields, Google login button, and placeholder messages.

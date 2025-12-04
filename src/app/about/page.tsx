@@ -5,7 +5,7 @@ export default function AboutPage() {
     <div className="bg-background">
       <div className="container mx-auto px-4 py-16 md:px-6 lg:py-24">
         <div className="mx-auto max-w-3xl text-center">
-          <h1 className="text-4xl font-bold tracking-tight text-foreground font-headline sm:text-5xl">About Lanka StudyShare</h1>
+          <h1 className="text-4xl font-bold tracking-tight text-foreground font-headline sm:text-5xl">About APE ARCHIVE</h1>
           <p className="mt-6 text-lg leading-8 text-muted-foreground">
             Our mission is to create a collaborative and accessible educational environment for all Sri Lankan students, especially during times of crisis.
           </p>
@@ -44,10 +44,10 @@ export default function AboutPage() {
         </div>
 
         <div className="mx-auto mt-16 max-w-3xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-foreground font-headline sm:text-4xl">The Story Behind Lanka StudyShare</h2>
-            <p className="mt-6 text-muted-foreground">
-                Lanka StudyShare was born out of the challenges faced by students during national emergencies and lockdowns. Access to physical libraries and study groups became impossible, leaving many without the materials they needed. We created this platform to ensure that learning never stops, providing a digital library built by the community, for the community.
-            </p>
+          <h2 className="text-3xl font-bold tracking-tight text-foreground font-headline sm:text-4xl">The Story Behind APE ARCHIVE</h2>
+          <p className="mt-6 text-muted-foreground">
+            APE ARCHIVE was born out of the challenges faced by students during national emergencies and lockdowns. Access to physical libraries and study groups became impossible, leaving many without the materials they needed. We created this platform to ensure that learning never stops, providing a digital library built by the community, for the community.
+          </p>
         </div>
       </div>
     </div>
