@@ -75,6 +75,25 @@
   }
 }
 
+/* Full-page scrollbar (works in Chrome/Edge/Safari) */
+::-webkit-scrollbar {
+  width: 10px;            /* vertical scrollbar width */
+  height: 10px;           /* horizontal scrollbar height */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, hsl(var(--primary)) 0%, hsl(var(--primary)) 100%);
+  border-radius:12px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  min-height: 32px;
+}
+
 @layer base {
   * {
     @apply border-border;
