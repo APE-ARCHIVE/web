@@ -77,8 +77,10 @@
 
 /* Full-page scrollbar (works in Chrome/Edge/Safari) */
 ::-webkit-scrollbar {
-  width: 10px;            /* vertical scrollbar width */
-  height: 10px;           /* horizontal scrollbar height */
+  width: 10px;
+  /* vertical scrollbar width */
+  height: 10px;
+  /* horizontal scrollbar height */
 }
 
 ::-webkit-scrollbar-track {
@@ -88,7 +90,7 @@
 
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, hsl(var(--primary)) 0%, hsl(var(--primary)) 100%);
-  border-radius:12px;
+  border-radius: 12px;
   border: 3px solid transparent;
   background-clip: padding-box;
   min-height: 32px;
@@ -156,4 +158,52 @@
 
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Marquee animations for river-like flow */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee-slow {
+  animation: marquee 30s linear infinite;
+}
+
+.animate-marquee-medium {
+  animation: marquee 20s linear infinite;
+}
+
+.animate-marquee-fast {
+  animation: marquee 15s linear infinite;
+}
+
+/* Water bubble floating animation */
+@keyframes bubble {
+
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+
+  25% {
+    transform: translateY(-8px) scale(1.02);
+  }
+
+  50% {
+    transform: translateY(-4px) scale(1);
+  }
+
+  75% {
+    transform: translateY(-12px) scale(1.03);
+  }
+}
+
+.animate-bubble {
+  animation: bubble 3s ease-in-out infinite;
 }

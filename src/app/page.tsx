@@ -3,7 +3,7 @@
 import { HeroSection } from '@/components/home/hero-section';
 //import { RecentNewsSection } from '@/components/home/recent-news-section';
 //import {PopularSubjectsSection} from '@/components/home/popular-subjects-section';
-//import { ContributorsSection } from '@/components/home/contributors-section';
+import { ContributorsSection } from '@/components/home/contributors-section';
 //import {LatestUploadsSection} from '@/components/home/latest-uploads-section';
 //import { WelcomeModal } from '@/components/home/welcome-modal';
 
@@ -15,7 +15,7 @@ export default function Home() {
             {/* <RecentNewsSection /> */}
             {/* <PopularSubjectsSection/> */}
             {/* <LatestUploadsSection/> */}
-            {/* <ContributorsSection /> */}
+            <ContributorsSection />
         </div>
     );
 }
