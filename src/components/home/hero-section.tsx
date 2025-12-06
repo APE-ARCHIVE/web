@@ -31,7 +31,7 @@ export function HeroSection() {
                         {/* Two Strong Buttons */}
                         <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
                             <Button asChild size="lg" className="h-12 px-8 text-base rounded-xl shadow-lg hover:shadow-xl smooth-hover w-full sm:w-auto min-w-[200px]">
-                                <Link href="/browse">
+                                <Link href="/search">
                                     <BookOpen className="mr-2 h-5 w-5" />
                                     {t('home.browseButton')}
                                     <ArrowRight className="ml-2 h-5 w-5" />

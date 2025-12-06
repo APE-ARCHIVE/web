@@ -1,11 +1,8 @@
-import { Metadata } from 'next';
+'use client';
+
 import { Github } from 'lucide-react';
 import Link from 'next/link';
-
-export const metadata: Metadata = {
-    title: 'Contributors | APE ARCHIVE',
-    description: 'Meet the contributors who made APE ARCHIVE possible.',
-};
+import { Button } from '@/components/ui/button';
 
 const contributors = [
     { name: 'Oshan Avishka', githubProfile: 'https://github.com/APE-ARCHIVE' },
@@ -25,52 +22,116 @@ const contributors = [
     { name: 'Saumya Sithumini', githubProfile: 'https://github.com/APE-ARCHIVE' },
 ];
 
+// Split contributors into rows for the river effect
+const row1 = contributors.slice(0, 5);
+const row2 = contributors.slice(5, 10);
+const row3 = contributors.slice(10, 15);
+
 export default function ContributorsPage() {
     return (
-        <div className="container max-w-4xl py-12 md:py-24">
-            <div className="space-y-8">
-                <div className="space-y-4 text-center">
-                    <h1 className="text-4xl font-bold tracking-tight">Our Contributors</h1>
-                    <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                        APE ARCHIVE is an open-source project built by a community of passionate developers and students. We thank everyone who has contributed to making education more accessible.
+        <div className="min-h-screen">
+            {/* Header Section */}
+             <div className="py-8 md:py-16 px-4">
+                <div className="space-y-4 md:space-y-6 text-center">
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
+                        Meet Our Amazing
+                        <br />
+                        <span className="text-primary">Contributors</span>
+                    </h1>
+                    <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-xl mx-auto px-4">
+                        Passionate developers and students building the future of education in Sri Lanka
                     </p>
-                </div>
-
-                <div className="flex flex-col justify-center items-center">
-                    <Link
-                        href="https://github.com/APE-ARCHIVE"
-                        target="_blank"
-                        className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2"
-                    >
-                        <Github className="mr-2 h-4 w-4" />
-                        View Our GitHub Repository
+                    <Link href="https://github.com/APE-ARCHIVE" target="_blank">
+                        <Button size="lg" className="gap-2 mt-2">
+                            <Github className="w-4 h-4 sm:w-5 sm:h-5" />
+                            <span className="text-sm sm:text-base">View GitHub</span>
+                        </Button>
                     </Link>
                 </div>
+            </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-8">
-                    {contributors.map((contributor, index) => (
-                        <div
-                            key={index}
-                            className="p-6 rounded-xl border bg-card text-card-foreground shadow-sm flex flex-col items-center text-center space-y-4"
-                        >
-                            <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center">
-                                <Github className="w-10 h-10 text-muted-foreground" />
-                            </div>
-                            <div>
-                                <h3 className="font-semibold text-lg">{contributor.name}</h3>
-                                <p className="text-sm text-muted-foreground">Contributor</p>
-                            </div>
-                            <Link
-                                href={contributor.githubProfile}
-                                target="_blank"
-                                className="text-sm text-primary hover:underline"
-                            >
-                                View Profile
-                            </Link>
-                        </div>
-                    ))}
+
+
+            {/* River Flowing Bubbles Section */}
+            <div className="relative container max-w-4xl w-full overflow-hidden py-8">
+                {/* Left fade gradient */}
+                <div className="absolute left-0 top-0 bottom-0 w-24 md:w-32 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+                {/* Right fade gradient */}
+                <div className="absolute right-0 top-0 bottom-0 w-24 md:w-32 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+
+                {/* Row 1 - flows right to left */}
+                <div className="flex mb-8 animate-marquee-slow">
+                    <div className="flex gap-8 pr-8">
+                        {[...row1, ...row1, ...row1, ...row1].map((contributor, index) => (
+                            <BubbleCard key={`r1-${index}`} contributor={contributor} size="large" index={index} />
+                        ))}
+                    </div>
+                </div>
+
+                {/* Row 2 - flows right to left (faster) */}
+                <div className="flex mb-8 animate-marquee-fast">
+                    <div className="flex gap-6 pr-6">
+                        {[...row2, ...row2, ...row2, ...row2].map((contributor, index) => (
+                            <BubbleCard key={`r2-${index}`} contributor={contributor} size="medium" index={index} />
+                        ))}
+                    </div>
+                </div>
+
+                {/* Row 3 - flows right to left (medium speed) */}
+                <div className="flex animate-marquee-medium">
+                    <div className="flex gap-10 pr-10">
+                        {[...row3, ...row3, ...row3, ...row3].map((contributor, index) => (
+                            <BubbleCard key={`r3-${index}`} contributor={contributor} size="large" index={index} />
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>
     );
 }
+
+function BubbleCard({ contributor, size, index = 0 }: { contributor: { name: string; githubProfile: string }; size: 'small' | 'medium' | 'large'; index?: number }) {
+    const sizeClasses = {
+        small: 'w-16 h-16 text-lg',
+        medium: 'w-20 h-20 text-xl',
+        large: 'w-24 h-24 text-2xl',
+    };
+
+    // Different animation delays for natural look
+    const delays = ['0s', '0.5s', '1s', '1.5s', '2s'];
+    const delay = delays[index % delays.length];
+
+    return (
+        <Link
+            href={contributor.githubProfile}
+            target="_blank"
+            className="group flex flex-col items-center gap-2 flex-shrink-0"
+        >
+            <div
+                className={`
+                    ${sizeClasses[size]}
+                    rounded-full 
+                    bg-gradient-to-br from-card via-card to-primary/20
+                    border-2 border-border/50
+                    shadow-lg shadow-primary/10
+                    flex items-center justify-center
+                    transition-all duration-300
+                    group-hover:scale-110 
+                    group-hover:border-primary
+                    group-hover:shadow-xl
+                    group-hover:shadow-primary/30
+                    animate-bubble
+                `}
+                style={{ animationDelay: delay }}
+            >
+                <span className="font-bold text-primary">
+                    {contributor.name.charAt(0)}
+                </span>
+            </div>
+            <span className="text-xs text-muted-foreground group-hover:text-primary transition-colors whitespace-nowrap">
+                {contributor.name}
+            </span>
+        </Link>
+    );
+}
+

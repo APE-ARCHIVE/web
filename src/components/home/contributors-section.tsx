@@ -4,9 +4,8 @@ import {
     Card,
     CardContent,
 } from '@/components/ui/card';
-import { Users, Award } from 'lucide-react';
-import { PlaceHolderImages } from '@/constants/placeholder-images';
-import { contributors } from '@/constants/data';
+import { Users, Award, ArrowRight } from 'lucide-react';
+import teachers from '@/constants/teachers.json';
 import {
     Carousel,
     CarouselContent,
@@ -17,9 +16,17 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/lib/i18n-context';
+import Autoplay from 'embla-carousel-autoplay';
+import { useRef } from 'react';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 export function ContributorsSection() {
     const { t } = useLanguage();
+
+    const plugin = useRef(
+        Autoplay({ delay: 3000, stopOnInteraction: false, stopOnMouseEnter: true })
+    );
 
     return (
         <section
@@ -49,17 +56,15 @@ export function ContributorsSection() {
                                 align: 'start',
                                 loop: true,
                             }}
+                            plugins={[plugin.current]}
                             className="w-full"
                         >
                             <CarouselContent className="-ml-4">
-                                {contributors.map((contributor) => {
-                                    const avatar = PlaceHolderImages.find(
-                                        (img) => img.id === contributor.avatarId
-                                    );
+                                {teachers.map((teacher, index) => {
                                     return (
                                         <CarouselItem
-                                            key={contributor.id}
-                                            className="pl-4 md:basis-1/2 lg:basis-1/3"
+                                            key={index}
+                                            className="pl-4 md:basis-1/2 lg:basis-1/4"
                                         >
                                             <Card className="border-border/50 hover:border-primary/50 card-hover bg-card h-full">
                                                 <CardContent className="flex flex-col items-center text-center p-8 space-y-4">
@@ -68,12 +73,12 @@ export function ContributorsSection() {
                                                         <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary to-primary/60 blur-md opacity-30" />
                                                         <Avatar className="w-24 h-24 relative ring-4 ring-primary/20 ring-offset-4 ring-offset-background">
                                                             <AvatarImage
-                                                                src={avatar?.imageUrl}
-                                                                alt={contributor.name}
+                                                                src={teacher.image}
+                                                                alt={teacher.name}
                                                                 className="object-cover"
                                                             />
                                                             <AvatarFallback className="bg-primary/10 text-primary text-2xl font-bold">
-                                                                {contributor.name.charAt(0)}
+                                                                {teacher.name.charAt(0)}
                                                             </AvatarFallback>
                                                         </Avatar>
                                                         {/* Orange Accent Dot */}
@@ -82,10 +87,10 @@ export function ContributorsSection() {
 
                                                     <div className="space-y-2">
                                                         <h3 className="text-xl font-bold">
-                                                            {contributor.name}
+                                                            {teacher.name}
                                                         </h3>
                                                         <p className="text-sm text-muted-foreground">
-                                                            {contributor.contribution}
+                                                            {teacher.subject}
                                                         </p>
                                                         <div className="flex items-center justify-center gap-2 pt-2">
                                                             <Badge variant="secondary" className="text-xs">
@@ -103,6 +108,21 @@ export function ContributorsSection() {
                             <CarouselPrevious className="hidden md:flex -left-4 border-2 hover:border-primary hover:text-primary" />
                             <CarouselNext className="hidden md:flex -right-4 border-2 hover:border-primary hover:text-primary" />
                         </Carousel>
+                    </div>
+
+                    {/* See All Heroes Button */}
+                    <div className="flex justify-center mt-10">
+                        <Link href="/community-heroes">
+                            <Button
+                                variant="outline"
+                                size="lg"
+                                className="group gap-2 border-primary/30 hover:border-primary hover:bg-primary/10 transition-all duration-300"
+                            >
+                                <Users className="w-4 h-4 text-primary" />
+                                See All Heroes
+                                <ArrowRight className="w-4 h-4 text-primary group-hover:translate-x-1 transition-transform duration-300" />
+                            </Button>
+                        </Link>
                     </div>
                 </div>
             </div>

@@ -45,6 +45,9 @@ export function Footer() {
               <Link href="/contributors" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                 Contributors
               </Link>
+              <Link href="/community-heroes" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                Community Heroes
+              </Link>
             </nav>
           </div>
 
