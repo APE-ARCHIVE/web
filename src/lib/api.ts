@@ -6,7 +6,8 @@ import axios, {
 
 // Create axios instance with default config
 export const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001",
+  baseURL:
+    process.env.NEXT_PUBLIC_API_URL || "https://server-apearchive.freeddns.org",
   timeout: 30000,
   headers: {
     "Content-Type": "application/json",
@@ -16,9 +17,11 @@ export const apiClient = axios.create({
 // Request interceptor
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // Get token from localStorage (if using auth)
+    // Get token from localStorage
     const token =
-      typeof window !== "undefined" ? localStorage.getItem("token") : null;
+      typeof window !== "undefined"
+        ? localStorage.getItem("accessToken")
+        : null;
 
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -43,7 +46,7 @@ apiClient.interceptors.response.use(
         case 401:
           // Handle unauthorized - clear token and redirect to login
           if (typeof window !== "undefined") {
-            localStorage.removeItem("token");
+            localStorage.removeItem("accessToken");
             // window.location.href = '/login';
           }
           break;

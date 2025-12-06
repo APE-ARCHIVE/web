@@ -18,7 +18,7 @@ export function Hero3DModel() {
                 <spotLight position={[-5, 5, 5]} angle={0.5} penumbra={1} intensity={3} color="hsl(3.2, 100%, 59.4%)" />
                 <pointLight position={[0, -2, 2]} intensity={1} color="hsl(3.2, 100%, 59.4%)" />
                 <Suspense fallback={null}>
-                    <Model position={[0, -0.5, 0]} rotation={[0, 300, 0]} />
+                    <Model position={[0, 0, 0]} rotation={[6, 4.4, 0.15]} />
                     <Environment preset="city" />
                 </Suspense>
                 <OrbitControls enableZoom={false} />

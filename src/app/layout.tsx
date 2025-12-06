@@ -8,6 +8,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { ModeToggle } from '@/components/mode-toggle';
 import { LanguageProvider } from '@/lib/i18n-context';
 import { QueryProvider } from '@/components/query-provider';
+import { AuthProvider } from '@/lib/auth-context';
 
 export const metadata: Metadata = {
   title: 'APE ARCHIVE',
@@ -47,35 +48,37 @@ export default function RootLayout({
       </head>
       <body className={cn('min-h-screen bg-background font-body antialiased')}>
         <QueryProvider>
-          <LanguageProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="dark"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <div className="relative min-h-screen w-full bg-background">
-                {/*  Diagonal Cross Grid Background */}
-                <div
-                  className="absolute inset-0 z-0 opacity-40
+          <AuthProvider>
+            <LanguageProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="dark"
+                enableSystem
+                disableTransitionOnChange
+              >
+                <div className="relative min-h-screen w-full bg-background">
+                  {/*  Diagonal Cross Grid Background */}
+                  <div
+                    className="absolute inset-0 z-0 opacity-40
       [background-image:linear-gradient(0deg,transparent_49%,hsl(var(--border))_49%,hsl(var(--border))_51%,transparent_51%),linear-gradient(90deg,transparent_49%,hsl(var(--border))_49%,hsl(var(--border))_51%,transparent_51%)]
       [background-size:40px_40px]"
-                ></div>
+                  ></div>
 
-                <Header />
-                <div className="relative z-10 flex min-h-screen max-w-7xl w-full px-4 mx-auto flex-col justify-center items-center">
-                  {children}
+                  <Header />
+                  <div className="relative z-10 flex min-h-screen max-w-7xl w-full px-4 mx-auto flex-col justify-center items-center">
+                    {children}
+                  </div>
+                  <div className="relative z-50">
+                    <Footer />
+                  </div>
                 </div>
-                <div className="relative z-50">
-                  <Footer />
+                <div className="fixed bottom-4 right-4 z-50">
+                  <ModeToggle />
                 </div>
-              </div>
-              <div className="fixed bottom-4 right-4 z-50">
-                <ModeToggle />
-              </div>
-              <Toaster />
-            </ThemeProvider>
-          </LanguageProvider>
+                <Toaster />
+              </ThemeProvider>
+            </LanguageProvider>
+          </AuthProvider>
         </QueryProvider>
       </body>
     </html>
