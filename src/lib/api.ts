@@ -3,6 +3,10 @@ import axios, {
   InternalAxiosRequestConfig,
   AxiosResponse,
 } from "axios";
+import Cookies from "js-cookie";
+
+// Cookie name for access token
+const AUTH_COOKIE_NAME = "accessToken";
 
 // Create axios instance with default config
 export const apiClient = axios.create({
@@ -17,11 +21,9 @@ export const apiClient = axios.create({
 // Request interceptor
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // Get token from localStorage
+    // Get token from cookies
     const token =
-      typeof window !== "undefined"
-        ? localStorage.getItem("accessToken")
-        : null;
+      typeof window !== "undefined" ? Cookies.get(AUTH_COOKIE_NAME) : null;
 
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -44,10 +46,9 @@ apiClient.interceptors.response.use(
     if (error.response) {
       switch (error.response.status) {
         case 401:
-          // Handle unauthorized - clear token and redirect to login
+          // Handle unauthorized - clear token cookie
           if (typeof window !== "undefined") {
-            localStorage.removeItem("accessToken");
-            // window.location.href = '/login';
+            Cookies.remove(AUTH_COOKIE_NAME, { path: "/" });
           }
           break;
         case 403:
@@ -67,11 +68,20 @@ apiClient.interceptors.response.use(
 
 // Query key factory for TanStack Query
 export const queryKeys = {
-  // Add your query keys here as you build APIs
-  // Example:
-  // documents: {
-  //     all: ['documents'] as const,
-  //     list: (filters: Record<string, unknown>) => [...queryKeys.documents.all, 'list', filters] as const,
-  //     detail: (id: string) => [...queryKeys.documents.all, 'detail', id] as const,
-  // },
+  auth: {
+    me: ["auth", "me"] as const,
+  },
+  library: {
+    all: ["library"] as const,
+    hierarchy: () => [...queryKeys.library.all, "hierarchy"] as const,
+    tags: () => [...queryKeys.library.all, "tags"] as const,
+    browse: (filters: Record<string, unknown>) =>
+      [...queryKeys.library.all, "browse", filters] as const,
+  },
+  resources: {
+    all: ["resources"] as const,
+    list: (filters: Record<string, unknown>) =>
+      [...queryKeys.resources.all, "list", filters] as const,
+    detail: (id: string) => [...queryKeys.resources.all, "detail", id] as const,
+  },
 } as const;

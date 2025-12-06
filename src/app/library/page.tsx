@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -19,9 +20,12 @@ import {
   Eye,
   SlidersHorizontal,
   ArrowLeft,
+  Loader2,
+  AlertCircle,
+  RefreshCw,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import libraryData from './library-hirachchi-responce.json';
+import { apiClient } from '@/lib/api';
 
 // Types based on API response structure
 interface DocumentTag {
@@ -58,6 +62,8 @@ const subjectColors: Record<string, string> = {
   'English': 'bg-indigo-500',
   'Sinhala': 'bg-pink-500',
   'Tamil': 'bg-rose-500',
+  'Combined Maths': 'bg-violet-500',
+  'Accounting': 'bg-cyan-500',
   'default': 'bg-primary',
 };
 
@@ -72,6 +78,7 @@ const resourceTypeColors: Record<string, string> = {
   'Notes': 'bg-green-500/20 text-green-500 border-green-500/30',
   'Past Paper': 'bg-amber-500/20 text-amber-500 border-amber-500/30',
   'Textbook': 'bg-red-500/20 text-red-500 border-red-500/30',
+  'Unit': 'bg-cyan-500/20 text-cyan-500 border-cyan-500/30',
   'default': 'bg-muted text-muted-foreground border-border',
 };
 
@@ -117,7 +124,7 @@ function FolderCard({ name, itemCount, onClick, color }: FolderCardProps) {
   );
 }
 
-// PDF Card Component
+// PDF Card Component - Links to /pdfs/[id] viewer
 interface PDFCardProps {
   document: Document;
 }
@@ -130,39 +137,41 @@ function PDFCard({ document }: PDFCardProps) {
   const resourceTypeClass = resourceTypeColors[resourceType] || resourceTypeColors['default'];
 
   return (
-    <Card className="group card-hover cursor-pointer overflow-hidden border-border/50 bg-card/50 backdrop-blur-sm">
-      <CardContent className="p-0">
-        <div className="relative aspect-[4/3] bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center overflow-hidden">
-          <div className={cn("absolute inset-0 opacity-10", subject ? getSubjectColor(subject) : 'bg-primary')} />
-          <FileText className="h-12 w-12 text-muted-foreground group-hover:text-primary transition-colors" />
-          <Badge className={cn("absolute top-2 left-2 border", resourceTypeClass)}>
-            {resourceType}
-          </Badge>
-          {medium && (
-            <Badge variant="secondary" className="absolute top-2 right-2 text-xs">
-              {medium.replace(' Medium', '')}
+    <Link href={`/pdfs/${document.id}`}>
+      <Card className="group card-hover cursor-pointer overflow-hidden border-border/50 bg-card/50 backdrop-blur-sm h-full">
+        <CardContent className="p-0">
+          <div className="relative aspect-[4/3] bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center overflow-hidden">
+            <div className={cn("absolute inset-0 opacity-10", subject ? getSubjectColor(subject) : 'bg-primary')} />
+            <FileText className="h-12 w-12 text-muted-foreground group-hover:text-primary transition-colors" />
+            <Badge className={cn("absolute top-2 left-2 border", resourceTypeClass)}>
+              {resourceType}
             </Badge>
-          )}
-        </div>
-        <div className="p-4 space-y-2">
-          <h3 className="font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors" title={document.title}>
-            {document.title}
-          </h3>
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <span className="flex items-center gap-1">
-                <Eye className="h-3 w-3" />
-                {document.views}
-              </span>
-              <span className="flex items-center gap-1">
-                <Download className="h-3 w-3" />
-                {document.downloads}
-              </span>
+            {medium && (
+              <Badge variant="secondary" className="absolute top-2 right-2 text-xs">
+                {medium.replace(' Medium', '')}
+              </Badge>
+            )}
+          </div>
+          <div className="p-4 space-y-2">
+            <h3 className="font-semibold text-sm line-clamp-2 group-hover:text-primary transition-colors" title={document.title}>
+              {document.title}
+            </h3>
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <span className="flex items-center gap-1">
+                  <Eye className="h-3 w-3" />
+                  {document.views}
+                </span>
+                <span className="flex items-center gap-1">
+                  <Download className="h-3 w-3" />
+                  {document.downloads}
+                </span>
+              </div>
             </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }
 
@@ -201,7 +210,7 @@ function Breadcrumb({ path, onNavigate }: BreadcrumbProps) {
   );
 }
 
-// Sidebar Tree Navigation - FIXED: Separate toggle and navigate
+// Sidebar Tree Navigation
 interface TreeNodeProps {
   name: string;
   data: HierarchyLevel | Document[];
@@ -217,7 +226,6 @@ function TreeNode({ name, data, path, currentPath, onNavigate, level = 0 }: Tree
   const isExactMatch = JSON.stringify(path) === JSON.stringify(currentPath);
   const isDocument = isDocumentArray(data);
 
-  // Document nodes (leaf nodes with documents)
   if (isDocument) {
     return (
       <button
@@ -239,7 +247,6 @@ function TreeNode({ name, data, path, currentPath, onNavigate, level = 0 }: Tree
 
   const entries = Object.entries(data as HierarchyLevel);
 
-  // Folder nodes - chevron toggles, folder name navigates
   return (
     <div>
       <div
@@ -249,35 +256,23 @@ function TreeNode({ name, data, path, currentPath, onNavigate, level = 0 }: Tree
         )}
         style={{ paddingLeft: `${(level * 12) + 8}px` }}
       >
-        {/* Toggle button - ONLY toggles expand/collapse */}
         <button
           onClick={(e) => {
             e.stopPropagation();
             setIsOpen(!isOpen);
           }}
           className="p-0.5 hover:bg-background/20 rounded shrink-0"
-          aria-label={isOpen ? "Collapse" : "Expand"}
         >
-          {isOpen ? (
-            <ChevronDown className="h-4 w-4" />
-          ) : (
-            <ChevronRight className="h-4 w-4" />
-          )}
+          {isOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
         </button>
-        {/* Folder name - navigates to this path */}
         <button
           onClick={() => onNavigate(path)}
           className="flex items-center gap-2 flex-1 min-w-0 text-left"
         >
-          {isOpen ? (
-            <FolderOpen className="h-4 w-4 shrink-0" />
-          ) : (
-            <Folder className="h-4 w-4 shrink-0" />
-          )}
+          {isOpen ? <FolderOpen className="h-4 w-4 shrink-0" /> : <Folder className="h-4 w-4 shrink-0" />}
           <span className="truncate">{name}</span>
         </button>
       </div>
-      {/* Children - only shown when open */}
       {isOpen && (
         <div className="mt-1">
           {entries.map(([key, value]) => (
@@ -297,16 +292,66 @@ function TreeNode({ name, data, path, currentPath, onNavigate, level = 0 }: Tree
   );
 }
 
+// Loading State
+function LoadingState() {
+  return (
+    <div className="flex flex-col items-center justify-center py-16 gap-4">
+      <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      <p className="text-muted-foreground">Loading library...</p>
+    </div>
+  );
+}
+
+// Error State
+function ErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
+  return (
+    <div className="flex flex-col items-center justify-center py-16 gap-4 text-center">
+      <AlertCircle className="h-12 w-12 text-destructive" />
+      <div>
+        <h3 className="font-semibold text-lg mb-1">Failed to load library</h3>
+        <p className="text-muted-foreground text-sm">{message}</p>
+      </div>
+      <Button onClick={onRetry} variant="outline">
+        <RefreshCw className="h-4 w-4 mr-2" />
+        Try again
+      </Button>
+    </div>
+  );
+}
+
 // Main Library Page
 export default function Library() {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPath, setCurrentPath] = useState<string[]>([]);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [hierarchy, setHierarchy] = useState<HierarchyLevel | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const hierarchy = libraryData.data as HierarchyLevel;
+  const fetchLibrary = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await apiClient.get('/api/v1/library/hierarchy');
+      if (response.data?.success && response.data?.data) {
+        setHierarchy(response.data.data as HierarchyLevel);
+      } else {
+        throw new Error('Invalid response format');
+      }
+    } catch (err: any) {
+      console.error('Failed to fetch library:', err);
+      setError(err?.response?.data?.message || err?.message || 'Failed to load library');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  // Get current level data based on path
+  useEffect(() => {
+    fetchLibrary();
+  }, []);
+
   const currentData = useMemo(() => {
+    if (!hierarchy) return null;
     let data: HierarchyLevel | Document[] = hierarchy;
     for (const key of currentPath) {
       if (isDocumentArray(data)) break;
@@ -315,23 +360,18 @@ export default function Library() {
     return data;
   }, [currentPath, hierarchy]);
 
-  // Get items to display (either folders or documents)
   const displayItems = useMemo(() => {
+    if (!currentData) return [];
     if (isDocumentArray(currentData)) {
       return currentData.filter(doc =>
         !searchQuery || doc.title.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
-
     const entries = Object.entries(currentData as HierarchyLevel);
     if (!searchQuery) return entries;
-
-    return entries.filter(([key]) =>
-      key.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    return entries.filter(([key]) => key.toLowerCase().includes(searchQuery.toLowerCase()));
   }, [currentData, searchQuery]);
 
-  // Count items in a folder
   const getItemCount = (data: HierarchyLevel | Document[]): number => {
     if (isDocumentArray(data)) return data.length;
     return Object.values(data).reduce((count, value) => {
@@ -339,79 +379,75 @@ export default function Library() {
     }, 0);
   };
 
-  // Navigation handlers
   const navigateToPath = (path: string[]) => {
     setCurrentPath(path);
     setSearchQuery('');
     setMobileFiltersOpen(false);
   };
 
-  const navigateUp = () => {
-    setCurrentPath(prev => prev.slice(0, -1));
-  };
+  const navigateUp = () => setCurrentPath(prev => prev.slice(0, -1));
 
   const handleBreadcrumbNavigate = (index: number) => {
-    if (index === -1) {
-      setCurrentPath([]);
-    } else {
-      setCurrentPath(prev => prev.slice(0, index + 1));
-    }
+    if (index === -1) setCurrentPath([]);
+    else setCurrentPath(prev => prev.slice(0, index + 1));
   };
 
-  const isShowingDocuments = isDocumentArray(currentData);
-  const gradeKeys = Object.keys(hierarchy);
+  const isShowingDocuments = currentData ? isDocumentArray(currentData) : false;
+  const gradeKeys = hierarchy ? Object.keys(hierarchy) : [];
 
-  // Sidebar content
-  const SidebarContent = () => (
-    <div className="space-y-2">
-      <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-        <Folder className="h-5 w-5" />
-        Browse
-      </h2>
-      <ScrollArea className="h-[calc(100vh-16rem)]">
-        {gradeKeys.map((grade) => (
-          <TreeNode
-            key={grade}
-            name={grade}
-            data={hierarchy[grade]}
-            path={[grade]}
-            currentPath={currentPath}
-            onNavigate={navigateToPath}
-          />
-        ))}
-      </ScrollArea>
-    </div>
-  );
+  const SidebarContent = () => {
+    if (!hierarchy) return null;
+    return (
+      <div className="space-y-2">
+        <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          <Folder className="h-5 w-5" />
+          Browse
+        </h2>
+        <ScrollArea className="h-[calc(100vh-16rem)]">
+          {gradeKeys.map((grade) => (
+            <TreeNode
+              key={grade}
+              name={grade}
+              data={hierarchy[grade]}
+              path={[grade]}
+              currentPath={currentPath}
+              onNavigate={navigateToPath}
+            />
+          ))}
+        </ScrollArea>
+      </div>
+    );
+  };
+
+  if (isLoading) {
+    return <div className="flex flex-col w-full min-h-screen py-8"><LoadingState /></div>;
+  }
+
+  if (error) {
+    return <div className="flex flex-col w-full min-h-screen py-8"><ErrorState message={error} onRetry={fetchLibrary} /></div>;
+  }
 
   return (
     <div className="flex flex-col w-full min-h-screen py-8">
-      {/* Header */}
       <div className="mb-6 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold">Document Library</h1>
-            <p className="text-muted-foreground text-sm mt-1">
-              Browse and download study materials
-            </p>
+            <p className="text-muted-foreground text-sm mt-1">Browse and download study materials</p>
           </div>
-          <div className="flex items-center gap-2">
-            <Sheet open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="sm" className="lg:hidden">
-                  <SlidersHorizontal className="h-4 w-4 mr-2" />
-                  Browse
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-80">
-                <div className="py-4">
-                  <SidebarContent />
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
+          <Sheet open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="sm" className="lg:hidden">
+                <SlidersHorizontal className="h-4 w-4 mr-2" />
+                Browse
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-80">
+              <div className="py-4"><SidebarContent /></div>
+            </SheetContent>
+          </Sheet>
         </div>
 
-        {/* Search Bar */}
         <div className="relative max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
@@ -423,7 +459,6 @@ export default function Library() {
           />
         </div>
 
-        {/* Breadcrumb & Back Button */}
         <div className="flex items-center gap-2">
           {currentPath.length > 0 && (
             <Button variant="ghost" size="sm" onClick={navigateUp} className="shrink-0">
@@ -435,16 +470,11 @@ export default function Library() {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="flex gap-6 flex-1">
-        {/* Desktop Sidebar */}
         <aside className="hidden lg:block w-72 shrink-0">
-          <div className="sticky top-24">
-            <SidebarContent />
-          </div>
+          <div className="sticky top-24"><SidebarContent /></div>
         </aside>
 
-        {/* Content Grid */}
         <main className="flex-1 min-w-0">
           <div className="mb-4 text-sm text-muted-foreground">
             {isShowingDocuments
@@ -456,9 +486,7 @@ export default function Library() {
           {displayItems.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {isShowingDocuments
-                ? (displayItems as Document[]).map((doc) => (
-                  <PDFCard key={doc.id} document={doc} />
-                ))
+                ? (displayItems as Document[]).map((doc) => <PDFCard key={doc.id} document={doc} />)
                 : (displayItems as [string, HierarchyLevel | Document[]][]).map(([key, value]) => (
                   <FolderCard
                     key={key}
@@ -474,14 +502,8 @@ export default function Library() {
             <div className="flex flex-col items-center justify-center py-16 text-center">
               <FileText className="h-16 w-16 text-muted-foreground mb-4" />
               <h3 className="text-lg font-semibold mb-2">No items found</h3>
-              <p className="text-muted-foreground text-sm mb-4">
-                Try a different search term
-              </p>
-              {searchQuery && (
-                <Button variant="outline" onClick={() => setSearchQuery('')}>
-                  Clear search
-                </Button>
-              )}
+              <p className="text-muted-foreground text-sm mb-4">Try a different search term</p>
+              {searchQuery && <Button variant="outline" onClick={() => setSearchQuery('')}>Clear search</Button>}
             </div>
           )}
         </main>

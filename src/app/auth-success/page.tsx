@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2, CheckCircle, XCircle } from 'lucide-react';
+import { setAuthCookies } from '@/lib/auth-context';
 
 export default function AuthSuccessPage() {
     const router = useRouter();
@@ -17,18 +18,13 @@ export default function AuthSuccessPage() {
         const params = new URLSearchParams(hash);
 
         const accessToken = params.get('accessToken');
+        console.log('accessToken', accessToken);
         const userId = params.get('userId');
         const isOnboarded = params.get('isOnboarded');
 
         if (accessToken) {
-            // Store in localStorage
-            localStorage.setItem('accessToken', accessToken);
-            if (userId) {
-                localStorage.setItem('userId', userId);
-            }
-            if (isOnboarded) {
-                localStorage.setItem('isOnboarded', isOnboarded);
-            }
+            // Store in cookies
+            setAuthCookies(accessToken, userId || undefined);
 
             setStatus('success');
             setMessage('Login successful! Redirecting...');
@@ -44,7 +40,7 @@ export default function AuthSuccessPage() {
             // Redirect to upload page after delay
             setTimeout(() => {
                 router.push('/upload');
-            }, 3000);
+            }, 5000);
         }
     }, [router]);
 

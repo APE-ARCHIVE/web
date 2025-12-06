@@ -1,7 +1,20 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import Cookies from 'js-cookie';
 import { apiClient } from './api';
+
+// Cookie names
+const AUTH_COOKIE_NAME = 'accessToken';
+const USER_ID_COOKIE_NAME = 'userId';
+
+// Cookie options - 7 days expiry
+const COOKIE_OPTIONS: Cookies.CookieAttributes = {
+    expires: 7,
+    path: '/',
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+};
 
 // User type based on /api/v1/auth/me response
 interface User {
@@ -29,13 +42,32 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://server-apearchive.freeddns.org';
 
+// Helper to get token from cookies
+export function getAccessToken(): string | undefined {
+    return Cookies.get(AUTH_COOKIE_NAME);
+}
+
+// Helper to set auth cookies
+export function setAuthCookies(accessToken: string, userId?: string) {
+    Cookies.set(AUTH_COOKIE_NAME, accessToken, COOKIE_OPTIONS);
+    if (userId) {
+        Cookies.set(USER_ID_COOKIE_NAME, userId, COOKIE_OPTIONS);
+    }
+}
+
+// Helper to clear auth cookies
+export function clearAuthCookies() {
+    Cookies.remove(AUTH_COOKIE_NAME, { path: '/' });
+    Cookies.remove(USER_ID_COOKIE_NAME, { path: '/' });
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     // Fetch user profile from API
     const fetchUser = useCallback(async () => {
-        const token = localStorage.getItem('accessToken');
+        const token = getAccessToken();
         if (!token) {
             setUser(null);
             setIsLoading(false);
@@ -48,12 +80,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 setUser(response.data.data);
             } else {
                 setUser(null);
-                localStorage.removeItem('accessToken');
+                clearAuthCookies();
             }
         } catch (error) {
             console.error('Failed to fetch user:', error);
             setUser(null);
-            localStorage.removeItem('accessToken');
+            clearAuthCookies();
         } finally {
             setIsLoading(false);
         }
@@ -69,10 +101,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         window.location.href = `${API_BASE_URL}/api/v1/auth/google`;
     }, []);
 
-    // Logout - clear localStorage and reset state
+    // Logout - clear cookies and reset state
     const logout = useCallback(() => {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('userId');
+        clearAuthCookies();
         setUser(null);
     }, []);
 

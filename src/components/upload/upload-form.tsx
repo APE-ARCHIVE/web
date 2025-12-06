@@ -75,17 +75,26 @@ export function UploadForm() {
     async function fetchTags() {
       try {
         const response = await apiClient.get('/api/v1/library/tags');
+        console.log('Tags API response:', response.data);
+
         if (response.data?.success && response.data?.data) {
-          // Group tags by their group property
-          const tags: Tag[] = response.data.data;
-          const grouped = tags.reduce((acc: GroupedTags, tag) => {
-            if (!acc[tag.group]) {
-              acc[tag.group] = [];
-            }
-            acc[tag.group].push(tag);
-            return acc;
-          }, {});
-          setGroupedTags(grouped);
+          const data = response.data.data;
+
+          // Check if data is already grouped (object) or an array
+          if (Array.isArray(data)) {
+            // Data is an array of tags - group by group property
+            const grouped = data.reduce((acc: GroupedTags, tag: Tag) => {
+              if (!acc[tag.group]) {
+                acc[tag.group] = [];
+              }
+              acc[tag.group].push(tag);
+              return acc;
+            }, {});
+            setGroupedTags(grouped);
+          } else if (typeof data === 'object') {
+            // Data is already grouped - use as-is
+            setGroupedTags(data as GroupedTags);
+          }
         }
       } catch (error) {
         console.error('Failed to fetch tags:', error);
